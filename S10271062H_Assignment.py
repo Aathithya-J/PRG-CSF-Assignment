@@ -1,5 +1,6 @@
 from random import randint
 
+#this dictionary contains player information
 player = {
     "playername": "",
     "x": 0,
@@ -37,6 +38,7 @@ prices['silver'] = (5, 8)
 prices['gold'] = (10, 18)
 
 
+#this is used to load the map
 def load_map(filename, map_struct):
     try:
         map_file = open(filename, 'r')
@@ -59,7 +61,7 @@ def load_map(filename, map_struct):
         print("Error: Could not find {}".format(filename))
         return False
 
-
+#this is used to remove the fog by assigning True, False
 def clear_fog(fog, player):
     pos_x = player["x"]
     pos_y = player["y"]
@@ -72,18 +74,21 @@ def clear_fog(fog, player):
                 fog[newpos_y][newpos_x] = True
 
 
+#this is to start the game and set the necessay info
 def initialize_game(player, fog, game_map):
+    #map
     if not load_map("level1.txt", game_map):
         print("Error loading map file. Please ensure level1.txt exists.")
         return False
-    
+    #set fog
     fog.clear()  
     for i in game_map:
         row = []
         for j in i:
             row.append(False)
         fog.append(row)   
-
+    
+    #input
     while True:
         playername = input("Greetings, miner! What is your name? ").strip()
         if len(playername) > 0 and not playername.isnumeric():
@@ -93,7 +98,7 @@ def initialize_game(player, fog, game_map):
         else:
             print("Invalid name, please enter a valid name (not just numbers).")
     
-
+    #player info
     player['x'] = 0
     player['y'] = 0
     player['copper'] = 0
@@ -117,7 +122,7 @@ def initialize_game(player, fog, game_map):
     clear_fog(fog, player)
     return True
 
-
+#this is to view the entire map
 def draw_map(game_map, fog, player):
     print("+------------------------------+")
     for y in range(MAP_HEIGHT):
@@ -134,7 +139,7 @@ def draw_map(game_map, fog, player):
         print("|")
     print("+------------------------------+")
 
-
+#this is used to check if we can mine the node
 def check_to_mine(position_x, position_y, player):
     if position_x < 0 or position_x >= MAP_WIDTH or position_y < 0 or position_y >= MAP_HEIGHT:
         return False
@@ -181,14 +186,9 @@ def check_to_mine(position_x, position_y, player):
     
     return True  
 
-
+#this is for the viewport to see 3x3 and 5x5 and the game logic
 def draw_view(game_map, fog, player):
     while True:
-        print("---------------------------------------------------")
-        print("DAY {}".format(player['day']))
-        print("---------------------------------------------------")
-        
-
         view_size = 2 if player["torch"] else 1  
         grid_size = view_size * 2 + 1
         
@@ -217,9 +217,6 @@ def draw_view(game_map, fog, player):
         print("(WASD) to move")
         print("(M)ap, (I)nformation, (P)ortal, (Q)uit to main menu")
         
-        if player["torch"]:
-            print("Portal: Use your magical portal stone to return to town instantly")
-        
         if player["turns"] <= 0:
             print("You are exhausted.")
             print("You place your portal stone here and zap back to town.")
@@ -232,9 +229,11 @@ def draw_view(game_map, fog, player):
             player["turns"] = TURNS_PER_DAY
             sell_ore()
             break
-
+        
+        #input 
         choice = input("Action? ").lower().strip()
         
+        #move up
         if choice == "w":
             new_y = player["y"] - 1
             if new_y >= 0:
@@ -256,6 +255,7 @@ def draw_view(game_map, fog, player):
                 print("You can't go that way.")
                 player["turns"] -= 1
 
+        #movde down
         elif choice == "s":
             new_y = player["y"] + 1
             if new_y < MAP_HEIGHT:
@@ -276,7 +276,8 @@ def draw_view(game_map, fog, player):
             else:
                 print("You can't go that way.")
                 player["turns"] -= 1
-
+        
+        #move to the left
         elif choice == "a":
             new_x = player["x"] - 1
             if new_x >= 0:
@@ -298,6 +299,7 @@ def draw_view(game_map, fog, player):
                 print("You can't go that way.")
                 player["turns"] -= 1
 
+        #move to the right
         elif choice == "d":
             new_x = player["x"] + 1
             if new_x < MAP_WIDTH:
@@ -344,7 +346,7 @@ def draw_view(game_map, fog, player):
             print("Invalid choice. Please try again.")
 
 
-
+#this is used to sell the ore and reset the necessary info
 def sell_ore():
     total_gp = 0
     sold_any = False
@@ -361,7 +363,7 @@ def sell_ore():
             player[ore] = 0
             sold_any = True
     
-    if sold_any:
+    if sold_any==True:
         player["load"] = 0
         print("You now have {} GP!".format(player["GP"]))
         print("All your ore has been sold and you're ready for a new day!")
@@ -383,6 +385,7 @@ def sell_ore():
             show_main_menu()
 
 
+#this is used to show the information when requested
 def show_information():
     portal_pos = "Not set"
     if "portal_x" in player and "portal_y" in player:
@@ -410,7 +413,7 @@ GP: {}
 Steps taken: {}
 ------------------------------""".format(player['playername'], portal_pos, pickaxe_desc, torch_status, player['load'], player['backpack'], player['GP'], player['steps']))
 
-
+#this is the logic to buy items from the shop
 def buy_stuff():
     while True:
         print("----------------------- Shop Menu -------------------------")
@@ -474,6 +477,7 @@ def buy_stuff():
             print("Invalid choice!")
 
 
+#this is used to save the game into the respective files
 def save_game(game_map, fog, player):
     try:
         with open("level1.txt", "w") as f:
@@ -497,7 +501,7 @@ def save_game(game_map, fog, player):
         print("Error saving game: {}".format(e))
         return False
 
-
+#this is used to load the game from the files
 def load_game():
     try:
         try:
@@ -557,6 +561,7 @@ def load_game():
                     row.append(False)
                 fog.append(row)
         
+        
         print("Game loaded successfully!")
         return True
         
@@ -565,9 +570,7 @@ def load_game():
         print("Returning to main menu...")
         return False
 
-
-
-
+#this does the printing of the menu and taking input and directing them to the udfs
 def show_main_menu():
     while True:
         print()
@@ -620,7 +623,7 @@ def show_main_menu():
         else:
             print("Invalid input. Please try again.")
 
-
+#this is for the town menu
 def show_town_menu():
     while True:
         print()
@@ -645,11 +648,15 @@ def show_town_menu():
             if "portal_x" in player and "portal_y" in player:
                 player["x"] = player["portal_x"]
                 player["y"] = player["portal_y"]
-                print("You use your portal stone to teleport back to the mine at ({}, {})!".format(player['portal_x'], player['portal_y']))
+                print("---------------------------------------------------")
+                print("{:^51}".format("DAY {}".format(player['day'])))
+                print("---------------------------------------------------")
             else:
                 player["x"] = 0
                 player["y"] = 0
-                print("You enter the mine for the first time.")
+                print("---------------------------------------------------")
+                print("{:^51}".format("DAY {}".format(player['day'])))
+                print("---------------------------------------------------")
             
             draw_view(game_map, fog, player)
         elif choice == "v":
@@ -664,6 +671,7 @@ def show_town_menu():
             print("Invalid input, please try again.")
 
 
+#main game
 game_state = "main"
 print("---------------- Welcome to Sundrop Caves! ----------------")
 print("You spent all your money to get the deed to a mine, a small")
