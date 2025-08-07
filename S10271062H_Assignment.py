@@ -1,3 +1,12 @@
+#Aathithya Jegatheesan
+#S10271062H
+# #This program is a text-based adventure game titled Sundrop Caves, developed as part of the 
+# PRG1 Assignment for Semester 1, AY2025/26. It is written in Python and meets both the Basic 
+# and Advanced Requirements outlined in the assignment handout. The player assumes the role 
+# of a miner who explores a mine, collects valuable ores, sells them, and upgrades tools with the 
+# ultimate goal of earning 500 GP to retire
+
+
 from random import randint
 
 #this dictionary contains player information
