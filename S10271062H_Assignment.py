@@ -4,7 +4,7 @@
 # PRG1 Assignment for Semester 1, AY2025/26. It is written in Python and meets both the Basic 
 # and Advanced Requirements outlined in the assignment handout. The player assumes the role 
 # of a miner who explores a mine, collects valuable ores, sells them, and upgrades tools with the 
-# ultimate goal of earning 500 GP to retire
+# ultimate goal of earning k0 GP to retire
 
 
 from random import randint
@@ -18,7 +18,7 @@ player = {
     "pickaxelvl": "copper",
     "load": 0,
     "backpack": 10,
-    "GP": 50,
+    "GP": 0,
     "steps": 0,
     "day": 1,  
     "silver": 0,
@@ -113,7 +113,7 @@ def initialize_game(player, fog, game_map):
     player['copper'] = 0
     player['silver'] = 0
     player['gold'] = 0
-    player['GP'] = 50
+    player['GP'] = 0
     player['day'] = 1
     player['steps'] = 0
     player['turns'] = TURNS_PER_DAY
